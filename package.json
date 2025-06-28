@@ -1,0 +1,23 @@
+{
+  "name": "proyectofinal-dds9",
+  "version": "1.0.0",
+  "description": "Proyecto Final for DDS9",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "keywords": [
+    "Proyecto Final",
+    "DDS9",
+    "Node.js",
+    "Fastify"
+  ],
+  "author": "Dennis Zhong <dennis@example.com>",
+  "contributors": [
+    "Gerardo Abrego <gerardo@example.com>",
+    "Zehidy Hassell <zehidy@example.com>"
+  ],
+  "license": "MIT",
+  "packageManager": "pnpm@10.12.1"
+}
