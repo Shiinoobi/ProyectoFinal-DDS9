@@ -1,79 +1,87 @@
-/* public/CSS/estilos.css */
-
+/* Body and Global Styles */
 body {
+  padding-top: 80px;
   font-family: Arial, sans-serif;
   margin: 0;
+  background: #f6f5f7;
+}
+
+/* Navbar Styles */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #a1a1a1;
+  z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.nav-list {
+  margin: 0;
   padding: 0;
-}
-
-h1 {
-  text-align: center;
-  margin-top: 20px;
-}
-
-.dashboard {
+  list-style: none;
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  padding: 20px;
   justify-content: center;
+  align-items: center;
+  height: 60px;
 }
 
-.dashboard a {
-  text-decoration: none;
-}
-
-.dashboard button {
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
-  border: none;
-  background-color: #007BFF;
-  color: #fff;
-  border-radius: 5px;
-  transition: background-color 0.3s ease;
-}
-
-.dashboard button:hover {
-  background-color: #0056b3;
-}
-
-/* Estilos para el botón desplegable de productos */
-.dropdown {
+.nav-list li {
   position: relative;
-  display: inline-block;
+  margin: 0 10px;
 }
 
-.dropbtn {
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
-  border: none;
-  background-color: #28a745;
+.nav-list a {
   color: #fff;
-  border-radius: 5px;
-  transition: background-color 0.3s ease;
+  text-transform: uppercase;
+  text-decoration: none;
+  letter-spacing: 0.15em;
+  font: bold 14px/1.4 'Open Sans', arial, sans-serif;
+  padding: 20px 15px;
+  display: inline-block;
+  transition: color 0.3s ease;
 }
 
-.dropbtn:hover {
-  background-color: #218838;
+.nav-list a:after {
+  background: none repeat scroll 0 0 transparent;
+  bottom: 0;
+  content: "";
+  display: block;
+  height: 2px;
+  left: 50%;
+  position: absolute;
+  background: #fff;
+  transition: width 0.3s ease 0s, left 0.3s ease 0s;
+  width: 0;
 }
 
+.nav-list a:hover:after {
+  width: 100%;
+  left: 0;
+}
+
+/* Dropdown styles */
 .dropdown-content {
   display: none;
   position: absolute;
   background-color: #f1f1f1;
   min-width: 200px;
-  border-radius: 5px;
+  border-radius: 0 0 5px 5px;
   box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
   z-index: 1;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .dropdown-content a {
-  color: #333;
+  color: #333 !important;
   padding: 12px 16px;
   text-decoration: none;
   display: block;
+  text-align: center;
+  font: normal 13px/1.4 'Open Sans', arial, sans-serif;
 }
 
 .dropdown-content a:hover {
@@ -82,4 +90,24 @@ h1 {
 
 .dropdown:hover .dropdown-content {
   display: block;
+}
+
+/* Back to Account Button (will be used in login page) */
+.back-to-account {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  color: #333;
+  font-size: 14px;
+  text-decoration: none;
+  z-index: 1000;
+  padding: 8px 15px;
+  background: rgba(255,255,255,0.8);
+  border-radius: 20px;
+  transition: all 0.3s ease;
+}
+
+.back-to-account:hover {
+  background: rgba(255,255,255,1);
+  transform: translateX(-5px);
 }
