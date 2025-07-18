@@ -27,7 +27,7 @@ async function startServer() {
     try {
         // Configuración CORS mejorada según documentación oficial
         await app.register(fastifyCors, {
-            origin: 'http://localhost:5500', // Específico (no array)
+            origin: ['127.0.0.1:5500', '*'], // Específico (no array)
             methods: ['GET', 'POST', 'OPTIONS'], // OPTIONS es esencial
             allowedHeaders: ['Content-Type', 'Accept'],
             credentials: true,
