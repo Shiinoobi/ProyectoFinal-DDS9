@@ -27,57 +27,72 @@ async function startServer() {
     try {
         // Configuración CORS mejorada según documentación oficial
         await app.register(fastifyCors, {
-            origin: ['127.0.0.1:5500', '*'], // Específico (no array)
-            methods: ['GET', 'POST', 'OPTIONS'], // OPTIONS es esencial
+            origin: ['http://127.0.0.1:5500', 'http://localhost:5500'], // Dominios específicos
+            methods: ['GET', 'POST', 'PUT', 'OPTIONS'],
             allowedHeaders: ['Content-Type', 'Accept'],
             credentials: true,
-            exposedHeaders: ['set-cookie'], // Necesario para cookies
-            maxAge: 86400, // Cache preflight por 24h
-            preflightContinue: false // Importante para credenciales
+            exposedHeaders: ['set-cookie'],
+            maxAge: 86400,
+            preflightContinue: false
         })
 
         // Conexión a la base de datos
         await Database.connect()
 
-        // Rutas de autenticación
         await app.register(async (fastify) => {
-            // Ruta de registro
-            fastify.post('/api/register', async (request, reply) => {
-                const { name, email, password } = request.body
-                const { registerUser } = await import('./src/util/authController.js')
-                const result = await registerUser(email, password, name)
+            const authRoutes = (await import('./src/routes/login.js')).default
+            await authRoutes(fastify)
+        })
 
-                return result.success
-                    ? reply
-                        .header('Access-Control-Allow-Credentials', 'true')
-                        .send({ success: true, user: result.user })
-                    : reply
-                        .code(400)
-                        .header('Access-Control-Allow-Credentials', 'true')
-                        .send({ success: false, error: result.error })
-            })
+        // Registrar rutas de perfil (modular)
+        await app.register(async (fastify) => {
+            // Ruta para actualizar perfil
+            fastify.post('/api/update-profile', async (request, reply) => {
+                const { User } = await import('./src/models/Users.js')
+                const { hashPassword, comparePasswords } = await import('./src/utils/passwordUtils.js')
 
-            // Ruta de login
-            fastify.post('/api/login', async (request, reply) => {
-                const { email, password } = request.body
-                const { loginUser } = await import('./src/util/authController.js')
-                const result = await loginUser(email, password)
+                try {
+                    const { userId, name, email, currentPassword, newPassword } = request.body
 
-                return result.success
-                    ? reply
-                        .header('Access-Control-Allow-Credentials', 'true')
-                        .send({ success: true, user: result.user })
-                    : reply
-                        .code(400)
-                        .header('Access-Control-Allow-Credentials', 'true')
-                        .send({ success: false, error: result.error })
-            })
+                    // Verificar usuario
+                    const user = await User.findById(userId)
+                    if (!user) {
+                        return reply.code(404).send({ success: false, error: 'Usuario no encontrado' })
+                    }
 
-            // Ruta para verificar sesión
-            fastify.get('/api/check-session', async (request, reply) => {
-                return reply
-                    .header('Access-Control-Allow-Credentials', 'true')
-                    .send({ status: 'active' })
+                    // Actualizar datos
+                    if (name) user.name = name
+                    if (email) user.email = email
+
+                    // Cambio de contraseña
+                    if (newPassword) {
+                        const isMatch = await comparePasswords(currentPassword, user.password)
+                        if (!isMatch) {
+                            return reply.code(401).send({ success: false, error: 'Contraseña actual incorrecta' })
+                        }
+                        user.password = await hashPassword(newPassword)
+                    }
+
+                    await user.save()
+
+                    const userData = {
+                        id: user._id,
+                        name: user.name,
+                        email: user.email,
+                        createdAt: user.createdAt
+                    }
+
+                    return reply
+                        .header('Access-Control-Allow-Credentials', 'true')
+                        .send({ success: true, user: userData })
+
+                } catch (error) {
+                    console.error('Error actualizando perfil:', error)
+                    return reply.code(500).send({
+                        success: false,
+                        error: 'Error al actualizar perfil'
+                    })
+                }
             })
         })
 
@@ -109,6 +124,7 @@ async function startServer() {
         console.log('   - POST /api/register')
         console.log('   - POST /api/login')
         console.log('   - GET  /api/check-session')
+        console.log('   - POST /api/update-profile')
 
     } catch (error) {
         console.error('Error al iniciar el servidor:', error)

@@ -4,11 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../public/CSS/style.css">
+    <link rel="stylesheet" href="../public/CSS/cuenta.css">
     <title>Cuenta</title>
 </head>
 <body>
     <nav class="navbar">
         <ul class="nav-list">
+            <li><a href="../index.html">Inicio</a></li>
             <li class="dropdown">
                 <a href="#" class="dropbtn">Productos</a>
                 <div class="dropdown-content">
@@ -20,17 +22,54 @@
             <li><a href="Carrito.html">Carrito</a></li>
             <li><a href="Contactos.html">Contacto</a></li>
             <li>
-                <a href="Cuenta.html">Cuenta<img src="https://www.pngplay.com/wp-content/uploads/12/User-Avatar-Profile-PNG-Pic-Clip-Art-Background.png" alt="Icono"></a>
+                <a href="Cuenta.html" id="accountLink">Cuenta<img src="https://www.pngplay.com/wp-content/uploads/12/User-Avatar-Profile-PNG-Pic-Clip-Art-Background.png" alt="Icono"></a>
             </li>
         </ul>
     </nav>
-    <h1>Tu Cuenta</h1>
-    <div class="dashboard">
-        <a href="../index.html"><button>Volver al Inicio</button></a>
-        <a href="../index.html"><button>Cerrar Seccion</button></a>
-        <a href="Login.html"><button>Iniciar Seccion</button></a>
-        <a href="Membresia.html"><button>Ver Membresias</button></a>
-        <a href="CuentaEdit.html"><button>Editar datos de la Cuenta</button></a>
+
+    <div class="account-container">
+        <h1>Tu Cuenta</h1>
+        
+        <div class="profile-info" id="profileInfo">
+            <!-- Los datos se cargarán dinámicamente -->
+        </div>
+
+        <div class="dashboard">
+            <button onclick="openEditModal('name')">Cambiar Nombre</button>
+            <button onclick="openEditModal('email')">Cambiar Correo</button>
+            <button onclick="openEditModal('password')">Cambiar Contraseña</button>
+            <a href="Membresia.html"><button>Ver Membresías</button></a>
+            <button id="logoutButton">Cerrar Sesión</button>
+        </div>
     </div>
+
+    <!-- Modal para edición -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle">Editar Información</h2>
+            <form id="editForm">
+                <div id="nameFields" class="form-group">
+                    <label for="newName">Nuevo Nombre:</label>
+                    <input type="text" id="newName" required>
+                </div>
+                <div id="emailFields" class="form-group">
+                    <label for="newEmail">Nuevo Correo:</label>
+                    <input type="email" id="newEmail" required>
+                </div>
+                <div id="passwordFields" class="form-group">
+                    <label for="currentPassword">Contraseña Actual:</label>
+                    <input type="password" id="currentPassword" required>
+                    <label for="newPassword">Nueva Contraseña:</label>
+                    <input type="password" id="newPassword" required>
+                    <label for="confirmPassword">Confirmar Nueva Contraseña:</label>
+                    <input type="password" id="confirmPassword" required>
+                </div>
+                <button type="submit" id="saveChanges">Guardar Cambios</button>
+            </form>
+        </div>
+    </div>
+
+    <script type="module" src="../public/js/cuenta.js"></script>
 </body>
 </html>
