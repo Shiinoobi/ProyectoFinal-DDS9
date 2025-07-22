@@ -2,29 +2,77 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="public/CSS/style.css">
-    <title>Inicio</title>
+  <meta charset="UTF-8"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="public/CSS/style.css"> 
+  <link rel="stylesheet" href="public/CSS/index.css">
+  <link rel="stylesheet" href="public/CSS/footer.css">
+  <title>Inicio</title>
 </head>
-
 <body>
-    <nav class="navbar">
-        <ul class="nav-list">
-            <li class="dropdown">
-                <a href="#" class="dropbtn">Productos</a>
-                <div class="dropdown-content">
-                    <a href="views/ProductosDigitales.html">Productos Digitales</a>
-                    <a href="views/ProductosFisicos.html">Productos Físicos</a>
-                </div>
-            </li>
-            <li><a href="views/Deseos.html">Deseos</a></li>
-            <li><a href="views/Carrito.html">Carrito</a></li>
-            <li><a href="views/Contactos.html">Contacto</a></li>
-            <li>
-                <a href="views/Cuenta.html">Cuenta<img src="https://www.pngplay.com/wp-content/uploads/12/User-Avatar-Profile-PNG-Pic-Clip-Art-Background.png" alt="Icono"></a>
-            </li>
-        </ul>
-    </nav>
+  <!-- Barra de navegación existente -->
+  <nav class="navbar">
+    <ul class="nav-list">
+      <li><a href="index.html">Inicio</a></li>
+      <li class="dropdown">
+        <a href="#" class="dropbtn">Categoria</a>
+        <div class="dropdown-content"> 
+          <a href="views/Productos.html">Todos los Productos</a>
+          <a href="views/ProductosDigitales.html">Productos Digitales</a>
+          <a href="views/ProductosFisicos.html">Productos Físicos</a>
+        </div>
+      </li>
+      <li><a href="views/Deseos.html">Deseos</a></li>  
+      <li><a href="views/Carrito.html">Carrito</a></li>
+      <li><a href="views/Contactos.html">Contacto</a></li>   
+      <li> 
+        <a href="views/Cuenta.html">Cuenta<img src="https://www.pngplay.com/wp-content/uploads/12/User-Avatar-Profile-PNG-Pic-Clip-Art-Background.png" alt="Icono"></a>
+      </li>
+    </ul>
+  </nav>
+  <h1>Pagina de Inicio</h1>
+  <!-- Banner superior -->
+  <section class="banner"> 
+    <img src="public/img/banners/banner.jpg" alt="Banner principal">
+  </section>
+  <!-- Buscador centrado -->
+  <div class="buscador">  
+    <input type="text" placeholder="Buscar Producto" />
+  </div>
+  <!-- Contenedor principal de botones e imágenes -->
+  <div class="contenedor">
+    <!-- Botones laterales -->
+    <div class="botones">
+      <button>Descuentos</button>
+      <button>Productos</button>
+      <button>Productos Destacados</button>
+      <button>Novedades</button>
+    </div>
+    <!-- Cards de producto o promoción -->
+    <div class="cards">
+      <div class="card"> 
+        <img src="public/img/productos/accesorio1.png" alt="Imagen 1" />
+      </div>
+      <div class="card">
+        <img src="public/img/productos/accesorio2.png" alt="Imagen 2" />
+      </div>
+    </div>
+  </div>
+  <script src="public/JS/app.js"></script>
+      
+  <footer class="footer"> 
+    <div class="footer-container">  
+      <div class="footer-info">  
+        <p>&copy; 2025 TuEmpresa. Todos los derechos reservados.</p> 
+        <p>Correo: contacto@tuempresa.com | Tel: +507 123-4567</p>    
+      </div>       
+      <div class="footer-links">        
+        <a href="../index.html">Inicio</a>       
+        <a href="Productos.html">Productos</a>             
+        <a href="Contactos.html">Contacto</a>              
+        <a href="Cuenta.html">Cuenta</a>          
+      </div>    
+    </div>   
+  </footer>
 </body>
 </html>
