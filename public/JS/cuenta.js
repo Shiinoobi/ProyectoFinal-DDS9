@@ -1,5 +1,33 @@
 import { getCurrentUser, setSession, clearSession } from '../../src/util/sesion.js'
 
+// Variables globales para el modal
+let currentEditType = ''
+
+// Funciones del modal
+function openEditModal(type) {
+  currentEditType = type
+  const modal = document.getElementById('editModal')
+  const title = document.getElementById('modalTitle')
+  const user = getCurrentUser()
+
+  // Configurar campos según el tipo de edición
+  document.getElementById('nameFields').style.display = type === 'name' ? 'block' : 'none'
+  document.getElementById('emailFields').style.display = type === 'email' ? 'block' : 'none'
+  document.getElementById('passwordFields').style.display = type === 'password' ? 'block' : 'none'
+  
+  // Rellenar valores actuales
+  if (type === 'name') document.getElementById('newName').value = user.name
+  if (type === 'email') document.getElementById('newEmail').value = user.email
+  
+  title.textContent = `Cambiar ${type === 'name' ? 'Nombre' : type === 'email' ? 'Correo' : 'Contraseña'}`
+  modal.style.display = 'block'
+}
+
+function closeModal() {
+  document.getElementById('editModal').style.display = 'none'
+  document.getElementById('editForm').reset()
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   const user = getCurrentUser()
   if (!user) {
@@ -9,17 +37,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
   displayUserInfo(user)
 
-  document.getElementById('logoutButton').addEventListener('click', async (e) => {
-    e.preventDefault()
-    try {
-      await clearSession()
-      window.location.href = '../index.html'
-    } catch (error) {
-      console.error('Error al cerrar sesión:', error)
-    }
+  // Configurar event listeners para los botones
+  document.getElementById('editNameBtn').addEventListener('click', () => openEditModal('name'))
+  document.getElementById('editEmailBtn').addEventListener('click', () => openEditModal('email'))
+  document.getElementById('editPasswordBtn').addEventListener('click', () => openEditModal('password'))
+  document.getElementById('closeModalBtn').addEventListener('click', closeModal)
+  document.getElementById('cancelModalBtn').addEventListener('click', closeModal)
+  document.getElementById('logoutButton').addEventListener('click', () => {
+    clearSession()
+    window.location.href = '../index.html'
   })
 
   document.getElementById('editForm').addEventListener('submit', handleFormSubmit)
+
+  // Cerrar modal al hacer clic fuera
+  window.addEventListener('click', (event) => {
+    if (event.target === document.getElementById('editModal')) {
+      closeModal()
+    }
+  })
 })
 
 function displayUserInfo(user) {
@@ -36,67 +72,62 @@ function displayUserInfo(user) {
   `
 }
 
-let currentEditType = ''
-
-function openEditModal(type) {
-  currentEditType = type
-  const modal = document.getElementById('editModal')
-  const title = document.getElementById('modalTitle')
-  const user = getCurrentUser()
-
-  document.getElementById('nameFields').style.display = type === 'name' ? 'block' : 'none'
-  document.getElementById('emailFields').style.display = type === 'email' ? 'block' : 'none'
-  document.getElementById('passwordFields').style.display = type === 'password' ? 'block' : 'none'
-  
-  if (type === 'name') document.getElementById('newName').value = user.name
-  if (type === 'email') document.getElementById('newEmail').value = user.email
-  
-  title.textContent = `Cambiar ${type === 'name' ? 'Nombre' : type === 'email' ? 'Correo' : 'Contraseña'}`
-  modal.style.display = 'block'
-}
-
-function closeModal() {
-  document.getElementById('editModal').style.display = 'none'
-  document.getElementById('editForm').reset()
-}
-
 async function handleFormSubmit(e) {
   e.preventDefault()
   const user = getCurrentUser()
   
+  if (!user || !user.id) {
+    showNotification('No se pudo obtener la sesión del usuario', 'error')
+    return
+  }
+
   try {
     const updateData = {
       userId: user.id
     }
 
     if (currentEditType === 'name') {
-      updateData.name = document.getElementById('newName').value
-    } else if (currentEditType === 'email') {
-      updateData.email = document.getElementById('newEmail').value
-    } else if (currentEditType === 'password') {
-      const newPassword = document.getElementById('newPassword').value
+      updateData.name = document.getElementById('newName').value.trim()
+      if (!updateData.name) throw new Error('El nombre no puede estar vacío')
+    } 
+    else if (currentEditType === 'email') {
+      updateData.email = document.getElementById('newEmail').value.trim()
+      if (!updateData.email) throw new Error('El correo no puede estar vacío')
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(updateData.email)) {
+        throw new Error('Ingresa un correo válido')
+      }
+    } 
+    else if (currentEditType === 'password') {
+      updateData.currentPassword = document.getElementById('currentPassword').value
+      updateData.newPassword = document.getElementById('newPassword').value
       const confirmPassword = document.getElementById('confirmPassword').value
       
-      if (newPassword !== confirmPassword) {
+      if (!updateData.newPassword || !updateData.currentPassword) {
+        throw new Error('Todos los campos de contraseña son requeridos')
+      }
+      if (updateData.newPassword !== confirmPassword) {
         throw new Error('Las contraseñas no coinciden')
       }
-      
-      updateData.currentPassword = document.getElementById('currentPassword').value
-      updateData.newPassword = newPassword
     }
 
-    const response = await fetch('/api/update-profile', {
+    const response = await fetch('http://localhost:3000/api/update-profile', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
       },
       body: JSON.stringify(updateData),
       credentials: 'include'
     })
 
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}))
+      throw new Error(errorData.error || `Error HTTP: ${response.status}`)
+    }
+
     const data = await response.json()
     
-    if (!response.ok) {
+    if (!data.success) {
       throw new Error(data.error || 'Error al actualizar perfil')
     }
 
@@ -106,7 +137,7 @@ async function handleFormSubmit(e) {
     showNotification('Cambios guardados exitosamente', 'success')
     
   } catch (error) {
-    console.error('Error:', error)
+    console.error('Error en handleFormSubmit:', error)
     showNotification(error.message || 'Error al guardar cambios', 'error')
   }
 }
@@ -126,9 +157,3 @@ function showNotification(message, type) {
     notification.remove()
   }, 3000)
 }
-
-window.addEventListener('click', (event) => {
-  if (event.target === document.getElementById('editModal')) {
-    closeModal()
-  }
-})

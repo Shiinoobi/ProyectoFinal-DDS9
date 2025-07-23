@@ -25,11 +25,11 @@ app.register(fastifyStatic, {
 
 async function startServer() {
     try {
-        // Configuración CORS mejorada según documentación oficial
+        // Configuración CORS
         await app.register(fastifyCors, {
-            origin: ['http://127.0.0.1:5500', 'http://localhost:5500'], // Dominios específicos
-            methods: ['GET', 'POST', 'PUT', 'OPTIONS'],
-            allowedHeaders: ['Content-Type', 'Accept'],
+            origin: ['http://127.0.0.1:5500', 'http://localhost:5500'],
+            methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+            allowedHeaders: ['Content-Type', 'Accept', 'Authorization'],
             credentials: true,
             exposedHeaders: ['set-cookie'],
             maxAge: 86400,
@@ -46,54 +46,8 @@ async function startServer() {
 
         // Registrar rutas de perfil (modular)
         await app.register(async (fastify) => {
-            // Ruta para actualizar perfil
-            fastify.post('/api/update-profile', async (request, reply) => {
-                const { User } = await import('./src/models/Users.js')
-                const { hashPassword, comparePasswords } = await import('./src/utils/passwordUtils.js')
-
-                try {
-                    const { userId, name, email, currentPassword, newPassword } = request.body
-
-                    // Verificar usuario
-                    const user = await User.findById(userId)
-                    if (!user) {
-                        return reply.code(404).send({ success: false, error: 'Usuario no encontrado' })
-                    }
-
-                    // Actualizar datos
-                    if (name) user.name = name
-                    if (email) user.email = email
-
-                    // Cambio de contraseña
-                    if (newPassword) {
-                        const isMatch = await comparePasswords(currentPassword, user.password)
-                        if (!isMatch) {
-                            return reply.code(401).send({ success: false, error: 'Contraseña actual incorrecta' })
-                        }
-                        user.password = await hashPassword(newPassword)
-                    }
-
-                    await user.save()
-
-                    const userData = {
-                        id: user._id,
-                        name: user.name,
-                        email: user.email,
-                        createdAt: user.createdAt
-                    }
-
-                    return reply
-                        .header('Access-Control-Allow-Credentials', 'true')
-                        .send({ success: true, user: userData })
-
-                } catch (error) {
-                    console.error('Error actualizando perfil:', error)
-                    return reply.code(500).send({
-                        success: false,
-                        error: 'Error al actualizar perfil'
-                    })
-                }
-            })
+            const profileRoutes = (await import('./src/routes/perfil.js')).default
+            await profileRoutes(fastify)
         })
 
         // Health check endpoint

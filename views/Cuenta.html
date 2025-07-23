@@ -31,13 +31,20 @@
         <h1>Tu Cuenta</h1>
         
         <div class="profile-info" id="profileInfo">
-            <!-- Los datos se cargarán dinámicamente -->
+            <div class="profile-header">
+                <img src="https://www.pngplay.com/wp-content/uploads/12/User-Avatar-Profile-PNG-Pic-Clip-Art-Background.png" alt="Avatar" class="profile-avatar">
+                <div>
+                    <div class="profile-name" id="userName"></div>
+                    <div class="profile-email" id="userEmail"></div>
+                    <div class="profile-joined" id="userJoined"></div>
+                </div>
+            </div>
         </div>
 
         <div class="dashboard">
-            <button onclick="openEditModal('name')">Cambiar Nombre</button>
-            <button onclick="openEditModal('email')">Cambiar Correo</button>
-            <button onclick="openEditModal('password')">Cambiar Contraseña</button>
+            <button id="editNameBtn">Cambiar Nombre</button>
+            <button id="editEmailBtn">Cambiar Correo</button>
+            <button id="editPasswordBtn">Cambiar Contraseña</button>
             <a href="Membresia.html"><button>Ver Membresías</button></a>
             <button id="logoutButton">Cerrar Sesión</button>
         </div>
@@ -46,26 +53,36 @@
     <!-- Modal para edición -->
     <div id="editModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
+            <span class="close" id="closeModalBtn">&times;</span>
             <h2 id="modalTitle">Editar Información</h2>
             <form id="editForm">
-                <div id="nameFields" class="form-group">
+                <div id="nameFields" class="form-group" style="display: none;">
                     <label for="newName">Nuevo Nombre:</label>
-                    <input type="text" id="newName" required>
+                    <input type="text" id="newName">
+                    <div class="error-message">Este campo es requerido</div>
                 </div>
-                <div id="emailFields" class="form-group">
+                <div id="emailFields" class="form-group" style="display: none;">
                     <label for="newEmail">Nuevo Correo:</label>
-                    <input type="email" id="newEmail" required>
+                    <input type="email" id="newEmail">
+                    <div class="error-message">Ingresa un correo válido</div>
                 </div>
-                <div id="passwordFields" class="form-group">
+                <div id="passwordFields" class="form-group" style="display: none;">
                     <label for="currentPassword">Contraseña Actual:</label>
-                    <input type="password" id="currentPassword" required>
+                    <input type="password" id="currentPassword">
+                    <div class="error-message">Este campo es requerido</div>
+                    
                     <label for="newPassword">Nueva Contraseña:</label>
-                    <input type="password" id="newPassword" required>
+                    <input type="password" id="newPassword">
+                    <div class="error-message">Este campo es requerido</div>
+                    
                     <label for="confirmPassword">Confirmar Nueva Contraseña:</label>
-                    <input type="password" id="confirmPassword" required>
+                    <input type="password" id="confirmPassword">
+                    <div class="error-message">Las contraseñas deben coincidir</div>
                 </div>
-                <button type="submit" id="saveChanges">Guardar Cambios</button>
+                <div class="form-actions">
+                    <button type="button" class="cancel-btn" id="cancelModalBtn">Cancelar</button>
+                    <button type="submit" class="submit-btn" id="saveChanges">Guardar Cambios</button>
+                </div>
             </form>
         </div>
     </div>
