@@ -1,0 +1,105 @@
+/* index.css */
+/* Banner Styles */
+.banner {
+  width: 100%;
+  margin-top: 0; /* Asegura que no haya margen superior */
+}
+
+.banner img {
+  width: 100%;
+  height: 300px;
+  display: block;
+  object-fit: cover; /* Mantiene la proporción de la imagen */
+}
+.buscador {
+  text-align: center;
+  margin: 20px 0;
+}
+
+.buscador input {
+  padding: 10px;
+  width: 50%;
+  font-size: 16px;
+}
+
+/* Contenedor principal */
+.contenedor {
+  display: flex;
+  justify-content: center; /* Centrado en lugar de space-between */
+  margin-top: 30px;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 0 5%;
+}
+
+/* Botones laterales */
+.botones {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  flex-shrink: 0; /* Evita que se encoja */
+  width: 200px; /* Ancho fijo */
+}
+
+.botones button {
+  padding: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  width: 100%; /* Botones de ancho completo */
+}
+
+/* Cards - Manteniendo el ancho fijo pero responsivo */
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 800px; /* Tamaño fijo que pediste */
+  max-width: 100%; /* Asegura responsividad */
+}
+
+.card {
+  width: 100%; /* Ocupa todo el ancho del contenedor cards */
+}
+
+.card img {
+  width: 800px; /* Mantiene el tamaño original */
+  max-width: 100%; /* Hace que sea responsivo */
+  height: auto; /* Mantiene proporción */
+}
+
+/* Ajustes responsivos */
+@media (max-width: 1200px) {
+  .contenedor {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .botones {
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 800px;
+    max-width: 100%;
+    justify-content: center;
+  }
+  
+  .botones button {
+    width: auto;
+    min-width: 150px;
+  }
+}
+
+@media (max-width: 850px) {
+  .card img {
+    width: 100%; /* Ajusta la imagen al ancho del card */
+  }
+}
+
+@media (max-width: 480px) {
+  .banner img {
+    height: 200px;
+  }
+  
+  .buscador input {
+    width: 80%;
+  }
+}
