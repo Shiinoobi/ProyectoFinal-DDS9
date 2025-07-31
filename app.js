@@ -40,6 +40,11 @@ async function startServer() {
         await Database.connect()
 
         await app.register(async (fastify) => {
+            const productRoutes = (await import('./src/routes/producto.js')).default
+            await productRoutes(fastify)
+        })
+
+        await app.register(async (fastify) => {
             const authRoutes = (await import('./src/routes/login.js')).default
             await authRoutes(fastify)
         })

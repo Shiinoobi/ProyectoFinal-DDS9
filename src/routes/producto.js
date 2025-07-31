@@ -1,0 +1,94 @@
+// src/routes/productRoutes.js
+import Product from "../models/Productos.js"
+import path from 'path'
+import fs from 'fs/promises'
+import { fileURLToPath } from 'url'
+import { dirname } from 'path'
+import fastifyMultipart from '@fastify/multipart'
+import fastifyStatic from '@fastify/static'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+
+// Directorio para guardar las imágenes subidas: public/img/productos
+// '..' para salir de 'routes', '..' para salir de 'src', luego 'public/img/productos'
+const UPLOADS_DIR = path.join(__dirname, '..', '..', 'public', 'img', 'productos')
+
+export default async function productRoutes(fastify, options) {
+    // Registrar el plugin fastify-multipart para manejar 'multipart/form-data'
+    fastify.register(fastifyMultipart, {
+        limits: {
+            fileSize: 10 * 1024 * 1024, // Limite de 10MB para el archivo
+            files: 1 // Solo permitir un archivo por subida
+        }
+    })
+
+    // Servir archivos estáticos del nuevo directorio 'public/img/productos'
+    // Esto es crucial para que las imágenes subidas sean accesibles por el navegador
+    fastify.register(fastifyStatic, {
+        root: UPLOADS_DIR,
+        prefix: '/img/productos/', // El prefijo que se usará en las URLs para acceder a las imágenes
+        decorateReply: false // Evita conflictos si ya tienes fastify-static registrado globalmente
+    })
+
+    // Ruta para servir el HTML del formulario de Productos
+    fastify.get('/productos', async (request, reply) => {
+        // Asume que Productos.html está en la raíz de tu proyecto
+        const productHtmlPath = path.join(__dirname, '..', '..', 'Productos.html')
+        try {
+            const htmlContent = await fs.readFile(productHtmlPath, 'utf-8')
+            reply.type('text/html').send(htmlContent)
+        } catch (err) {
+            fastify.log.error(err)
+            reply.status(500).send('Error al cargar la página de productos. ' + err.message)
+        }
+    })
+
+    // Ruta POST para añadir un nuevo producto
+    fastify.post('/products', async (request, reply) => {
+        try {
+            const data = await request.file() // Obtener el archivo del request (solo uno)
+
+            if (!data) {
+                return reply.status(400).send({ message: 'No se ha subido ninguna imagen.' })
+            }
+
+            const fields = data.fields
+            const name = fields.name?.value
+            const price = fields.price?.value
+            const category = fields.category?.value
+            const description = fields.description?.value
+
+            if (!name || !price || !category) {
+                return reply.status(400).send({ message: 'Nombre, precio y categoría son obligatorios.' })
+            }
+
+            // Crear el directorio 'public/img/productos' si no existe
+            await fs.mkdir(UPLOADS_DIR, { recursive: true })
+
+            // Generar un nombre único para la imagen
+            const filename = `${Date.now()}-${data.filename}`
+            const imagePath = path.join(UPLOADS_DIR, filename)
+
+            // Guardar el archivo en el servidor
+            await fs.writeFile(imagePath, await data.toBuffer())
+
+            // Crear el nuevo producto en la base de datos
+            const newProduct = new Product({
+                name: name,
+                price: parseFloat(price),
+                category: category,
+                // Guarda la ruta relativa al directorio 'public' para acceder desde el navegador
+                image: `/img/productos/${filename}`,
+                description: description
+            })
+
+            await newProduct.save()
+
+            reply.status(201).send({ message: 'Producto añadido exitosamente', product: newProduct })
+        } catch (error) {
+            fastify.log.error(error)
+            reply.status(500).send({ message: 'Error al añadir el producto', error: error.message })
+        }
+    })
+}
