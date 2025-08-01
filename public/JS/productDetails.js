@@ -1,8 +1,14 @@
 // public/JS/productDetails.js
 
+// Importamos la función para obtener el usuario de la sesión
+import { getCurrentUser } from './sesion.js'; // Asegúrate de que esta ruta sea correcta
+
 const API_BASE_URL = 'http://localhost:3000';
 const productDetailsContainer = document.getElementById('product-details');
 const relatedProductsGrid = document.getElementById('related-products-grid');
+const wishlistPopup = document.getElementById('wishlist-popup');
+const closePopupBtn = document.querySelector('.close-popup-btn');
+const popupMessage = document.getElementById('popup-message');
 
 document.addEventListener('DOMContentLoaded', () => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -10,10 +16,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (productId) {
         fetchProductDetails(productId);
-        fetchAndRenderRelatedProducts(productId); // Llama a la nueva función
+        fetchAndRenderRelatedProducts(productId);
     } else {
         productDetailsContainer.innerHTML = '<h2>Producto no encontrado.</h2><p>Vuelve a la <a href="Productos.html">página de productos</a>.</p>';
     }
+
+    // Event listener para cerrar el popup
+    closePopupBtn.addEventListener('click', () => {
+        wishlistPopup.style.display = 'none';
+    });
+
+    // Cerrar el popup haciendo clic fuera de él
+    window.addEventListener('click', (event) => {
+        if (event.target === wishlistPopup) {
+            wishlistPopup.style.display = 'none';
+        }
+    });
 });
 
 const fetchProductDetails = async (id) => {
@@ -24,6 +42,21 @@ const fetchProductDetails = async (id) => {
         }
         const product = await response.json();
         renderProductDetails(product);
+
+        // Lógica para el botón de deseos
+        const addToWishlistBtn = document.querySelector('.add-to-wishlist-btn');
+        if (addToWishlistBtn) {
+            addToWishlistBtn.addEventListener('click', () => {
+                // Obtenemos el usuario de la sesión
+                const user = getCurrentUser();
+
+                if (user && user._id) {
+                    addProductToWishlist(user._id, product._id);
+                } else {
+                    showPopup('Debes iniciar sesión para agregar productos a tu lista de deseos.', 'error');
+                }
+            });
+        }
     } catch (error) {
         console.error('Error fetching product details:', error);
         productDetailsContainer.innerHTML = '<h2>Error al cargar los detalles del producto.</h2><p>Por favor, intenta de nuevo más tarde.</p>';
@@ -51,7 +84,6 @@ const renderProductDetails = (product) => {
     productDetailsContainer.innerHTML = productHtml;
 };
 
-// NUEVA FUNCIÓN: Obtener y renderizar productos aleatorios
 const fetchAndRenderRelatedProducts = async (currentProductId) => {
     try {
         const response = await fetch(`${API_BASE_URL}/products/random?limit=4`);
@@ -60,7 +92,6 @@ const fetchAndRenderRelatedProducts = async (currentProductId) => {
         }
         const products = await response.json();
 
-        // Filtra el producto actual de la lista de productos aleatorios
         const filteredProducts = products.filter(p => p._id !== currentProductId);
 
         if (filteredProducts.length > 0) {
@@ -82,4 +113,39 @@ const fetchAndRenderRelatedProducts = async (currentProductId) => {
         console.error('Error fetching related products:', error);
         relatedProductsGrid.innerHTML = '<p>Error al cargar productos relacionados.</p>';
     }
+};
+
+// Lógica para añadir a la lista de deseos
+const addProductToWishlist = async (userId, productId) => {
+    try {
+        const response = await fetch(`${API_BASE_URL}/deseos`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ userId, productId }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            showPopup(data.message, 'success');
+        } else {
+            showPopup(data.message, 'error');
+        }
+    } catch (error) {
+        console.error('Error adding to wishlist:', error);
+        showPopup('Hubo un error al agregar el producto a la lista de deseos.', 'error');
+    }
+};
+
+// Mostrar el popup de notificación
+const showPopup = (message, type) => {
+    popupMessage.textContent = message;
+    if (type === 'success') {
+        wishlistPopup.style.backgroundColor = 'rgba(40, 167, 69, 0.9)'; // Verde
+    } else {
+        wishlistPopup.style.backgroundColor = 'rgba(220, 53, 69, 0.9)'; // Rojo
+    }
+    wishlistPopup.style.display = 'flex';
 };

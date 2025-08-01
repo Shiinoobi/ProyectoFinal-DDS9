@@ -2,6 +2,8 @@ import fastify from "fastify"
 import path from "path"
 import fastifyStatic from "@fastify/static"
 import fastifyCors from "@fastify/cors"
+import fastifySession from '@fastify/session'
+import fastifyCookie from "@fastify/cookie"
 import { fileURLToPath } from "url"
 import Database from "./src/config/db.js"
 import dotenv from "dotenv"
@@ -36,6 +38,19 @@ async function startServer() {
             preflightContinue: false
         })
 
+        await app.register(fastifyCookie)
+
+        // CONFIGURACIÓN DE SESIONES
+        await app.register(fastifySession, {
+            secret: process.env.SESSION_SECRET || 'a-very-secret-key-that-should-be-at-least-32-chars',
+            cookie: {
+                secure: process.env.NODE_ENV === 'production',
+                httpOnly: true,
+                sameSite: 'strict',
+            },
+            expires: 1800000 // 30 minutos
+        })
+
         // Conexión a la base de datos
         await Database.connect()
 
@@ -53,6 +68,11 @@ async function startServer() {
         await app.register(async (fastify) => {
             const profileRoutes = (await import('./src/routes/perfil.js')).default
             await profileRoutes(fastify)
+        })
+
+        await app.register(async (fastify) => {
+            const deseosRoutes = (await import('./src/routes/deseo.js')).default
+            await deseosRoutes(fastify)
         })
 
         // Health check endpoint

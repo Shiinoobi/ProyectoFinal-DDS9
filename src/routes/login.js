@@ -1,150 +1,85 @@
-import { registerUser, loginUser } from "../util/authController.js"
-import User from "../models/Users.js"
+import User from "../models/Users.js"; // Asegúrate de que la ruta a tu modelo de usuario sea correcta
+import { registerUser, loginUser } from "../util/authController.js";
 
 export default async function authRoutes(app) {
-  // Ruta de registro
+
   app.post('/api/register', async (request, reply) => {
     try {
-      const { name, email, password } = request.body
-      const result = await registerUser(email, password, name)
+      const { name, email, password } = request.body;
+      // La lógica de registro se mantiene en el controlador
+      const result = await registerUser(email, password, name);
 
       if (!result.success) {
         return reply.code(400)
-          .header('Access-Control-Allow-Credentials', 'true')
-          .send({ success: false, error: result.error })
+          .send({ success: false, error: result.error });
       }
 
-      // Crear token de sesión simple
-      const sessionToken = `session_${result.user.id}_${Date.now()}`
-      await User.findByIdAndUpdate(result.user.id, { sessionToken })
-
-      // Configurar cookie manualmente
-      const cookieOptions = [
-        `Path=/`,
-        `HttpOnly`,
-        `SameSite=Strict`,
-        `Max-Age=86400`,
-        process.env.NODE_ENV === 'production' ? 'Secure' : ''
-      ].filter(Boolean).join('; ')
-
-      return reply
-        .header('Set-Cookie', `sessionToken=${sessionToken}; ${cookieOptions}`)
-        .header('Access-Control-Allow-Credentials', 'true')
-        .send({ success: true, user: result.user })
+      // Si el registro es exitoso, el servidor simplemente responde.
+      // La autenticación (creación de sesión) ocurrirá en la ruta de login.
+      return reply.code(201).send({ success: true, message: "Registro exitoso." });
     } catch (error) {
-      console.error('Error en registro:', error)
+      console.error('Error en registro:', error);
       return reply.code(500)
-        .header('Access-Control-Allow-Credentials', 'true')
-        .send({ success: false, error: 'Error en el servidor' })
+        .send({ success: false, error: 'Error en el servidor' });
     }
-  })
+  });
 
-  // Ruta de login
   app.post('/api/login', async (request, reply) => {
     try {
-      const { email, password } = request.body
-      const result = await loginUser(email, password)
+      const { email, password } = request.body;
+      const result = await loginUser(email, password);
 
       if (!result.success) {
         return reply.code(400)
-          .header('Access-Control-Allow-Credentials', 'true')
-          .send({ success: false, error: result.error })
+          .send({ success: false, error: result.error });
       }
 
-      // Crear token de sesión simple
-      const sessionToken = `session_${result.user.id}_${Date.now()}`
-      await User.findByIdAndUpdate(result.user.id, { sessionToken })
+      request.session.user = {
+        _id: result.user.id,
+        name: result.user.name,
+        email: result.user.email,
+      };
 
-      // Configurar cookie manualmente
-      const cookieOptions = [
-        `Path=/`,
-        `HttpOnly`,
-        `SameSite=Strict`,
-        `Max-Age=86400`,
-        process.env.NODE_ENV === 'production' ? 'Secure' : ''
-      ].filter(Boolean).join('; ')
-
-      return reply
-        .header('Set-Cookie', `sessionToken=${sessionToken}; ${cookieOptions}`)
-        .header('Access-Control-Allow-Credentials', 'true')
-        .send({ success: true, user: result.user })
+      return reply.send({
+        success: true,
+        message: 'Inicio de sesión exitoso',
+        user: request.session.user,
+      });
     } catch (error) {
-      console.error('Error en login:', error)
+      console.error('Error en login:', error);
       return reply.code(500)
-        .header('Access-Control-Allow-Credentials', 'true')
-        .send({ success: false, error: 'Error en el servidor' })
+        .send({ success: false, error: 'Error en el servidor' });
     }
-  })
+  });
 
-  // Ruta para verificar sesión
   app.get('/api/check-session', async (request, reply) => {
     try {
-      const sessionToken = request.cookies?.sessionToken
-      
-      if (!sessionToken || !sessionToken.startsWith('session_')) {
-        return reply
-          .header('Access-Control-Allow-Credentials', 'true')
-          .send({ status: 'inactive' })
+      // Si `request.session.user` existe, significa que hay una sesión activa.
+      if (request.session.user) {
+        return reply.send({ status: 'active', user: request.session.user });
+      } else {
+        return reply.code(401).send({ status: 'inactive', message: 'No hay sesión activa.' });
       }
-
-      const userId = sessionToken.split('_')[1]
-      const user = await User.findOne({ 
-        _id: userId,
-        sessionToken: sessionToken
-      }).select('-password')
-      
-      if (!user) {
-        return reply
-          .header('Access-Control-Allow-Credentials', 'true')
-          .send({ status: 'inactive' })
-      }
-
-      return reply
-        .header('Access-Control-Allow-Credentials', 'true')
-        .send({
-          status: 'active',
-          user: {
-            id: user._id,
-            name: user.name,
-            email: user.email,
-            createdAt: user.createdAt
-          }
-        })
     } catch (error) {
-      console.error('Error verificando sesión:', error)
-      return reply
-        .header('Access-Control-Allow-Credentials', 'true')
-        .send({ status: 'inactive' })
+      console.error('Error verificando sesión:', error);
+      return reply.code(500).send({ status: 'inactive', error: 'Error en el servidor' });
     }
-  })
+  });
 
-  // Ruta de logout
   app.post('/api/logout', async (request, reply) => {
     try {
-      const sessionToken = request.cookies?.sessionToken
-      if (sessionToken && sessionToken.startsWith('session_')) {
-        const userId = sessionToken.split('_')[1]
-        await User.findByIdAndUpdate(userId, { $unset: { sessionToken: 1 } })
-      }
-      
-      // Configurar cookie de expiración manualmente
-      const cookieOptions = [
-        `Path=/`,
-        `HttpOnly`,
-        `SameSite=Strict`,
-        `Expires=Thu, 01 Jan 1970 00:00:00 GMT`,
-        process.env.NODE_ENV === 'production' ? 'Secure' : ''
-      ].filter(Boolean).join('; ')
-
-      return reply
-        .header('Set-Cookie', `sessionToken=; ${cookieOptions}`)
-        .header('Access-Control-Allow-Credentials', 'true')
-        .send({ success: true })
+      // DESTRUIR LA SESIÓN: Esto elimina la sesión del servidor y la cookie.
+      request.session.destroy((err) => {
+        if (err) {
+          console.error('Error al destruir la sesión:', err);
+          return reply.code(500).send({ success: false, error: 'Error al cerrar sesión' });
+        }
+        reply.send({ success: true, message: 'Sesión cerrada exitosamente.' });
+      });
     } catch (error) {
-      console.error('Error en logout:', error)
+      console.error('Error en logout:', error);
       return reply.code(500)
-        .header('Access-Control-Allow-Credentials', 'true')
-        .send({ success: false, error: 'Error al cerrar sesión' })
+        .send({ success: false, error: 'Error al cerrar sesión' });
     }
-  })
+  });
 }

@@ -1,4 +1,4 @@
-import { setSession } from '../../src/util/sesion.js'
+import { setSession } from './sesion.js'
 
 // Configuración base
 const API_BASE_URL = 'http://localhost:3000'

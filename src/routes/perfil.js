@@ -1,3 +1,5 @@
+// src/routes/perfil.js
+
 import User from '../models/Users.js'
 import { hashPassword, comparePasswords } from '../util/passwordUtils.js'
 
@@ -5,7 +7,7 @@ export default async function profileRoutes(fastify, options) {
   fastify.post('/api/update-profile', async (request, reply) => {
     try {
       const { userId, name, email, currentPassword, newPassword } = request.body
-      
+
       if (!userId) {
         return reply.code(400).send({
           success: false,
@@ -21,8 +23,8 @@ export default async function profileRoutes(fastify, options) {
         })
       }
       
-      // Actualizar nombre
-      if (name) {
+      // Actualizar nombre si se proporciona
+      if (name && name !== user.name) {
         if (name.trim().length < 2) {
           return reply.code(400).send({
             success: false,
@@ -38,22 +40,21 @@ export default async function profileRoutes(fastify, options) {
         if (!emailRegex.test(email)) {
           return reply.code(400).send({
             success: false,
-            error: 'Correo electrónico no válido'
+            error: 'Ingresa un correo electrónico válido'
           })
         }
         
-        const existingUser = await User.findOne({ email })
-        if (existingUser) {
+        const existingUser = await User.findOne({ email: email.trim() })
+        if (existingUser && existingUser._id.toString() !== user._id.toString()) {
           return reply.code(409).send({
             success: false,
             error: 'El correo electrónico ya está en uso'
           })
         }
-        
-        user.email = email
+        user.email = email.trim()
       }
-      
-      // Cambio de contraseña
+
+      // Lógica para cambiar la contraseña
       if (newPassword) {
         if (!currentPassword) {
           return reply.code(400).send({
@@ -101,11 +102,9 @@ export default async function profileRoutes(fastify, options) {
       console.error('Error en update-profile:', error)
       return reply
         .code(500)
-        .header('Content-Type', 'application/json; charset=utf-8')
-        .send({ 
-          success: false, 
-          error: 'Error interno del servidor',
-          message: error.message 
+        .send({
+          success: false,
+          error: 'Error interno del servidor.'
         })
     }
   })

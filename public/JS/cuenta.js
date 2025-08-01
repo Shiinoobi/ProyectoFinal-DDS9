@@ -1,113 +1,108 @@
-import { getCurrentUser, setSession, clearSession } from '../../src/util/sesion.js'
+// public/js/cuenta.js
+
+import { getCurrentUser, setSession, clearSession } from './sesion.js';
+
+// Elementos del DOM
+const editModal = document.getElementById('editModal');
+const closeModalBtn = document.getElementById('closeModalBtn');
+const cancelModalBtn = document.getElementById('cancelModalBtn');
+const editForm = document.getElementById('editForm');
+const modalTitle = document.getElementById('modalTitle');
+const nameFields = document.getElementById('nameFields');
+const emailFields = document.getElementById('emailFields');
+const passwordFields = document.getElementById('passwordFields');
+const notificationModal = document.getElementById('notificationModal');
+const notificationMessage = document.getElementById('notificationMessage');
+const closeNotificationBtn = document.getElementById('closeNotificationBtn');
+const notificationOkBtn = document.getElementById('notificationOkBtn');
 
 // Variables globales para el modal
-let currentEditType = ''
+let currentEditType = '';
 
 // Funciones del modal
 function openEditModal(type) {
-  currentEditType = type
-  const modal = document.getElementById('editModal')
-  const title = document.getElementById('modalTitle')
-  const user = getCurrentUser()
+  currentEditType = type;
+  const user = getCurrentUser();
 
-  // Configurar campos según el tipo de edición
-  document.getElementById('nameFields').style.display = type === 'name' ? 'block' : 'none'
-  document.getElementById('emailFields').style.display = type === 'email' ? 'block' : 'none'
-  document.getElementById('passwordFields').style.display = type === 'password' ? 'block' : 'none'
-  
-  // Rellenar valores actuales
-  if (type === 'name') document.getElementById('newName').value = user.name
-  if (type === 'email') document.getElementById('newEmail').value = user.email
-  
-  title.textContent = `Cambiar ${type === 'name' ? 'Nombre' : type === 'email' ? 'Correo' : 'Contraseña'}`
-  modal.style.display = 'block'
+  // Oculta todos los campos
+  nameFields.style.display = 'none';
+  emailFields.style.display = 'none';
+  passwordFields.style.display = 'none';
+
+  // Muestra los campos correctos
+  if (type === 'name') {
+    modalTitle.textContent = 'Cambiar Nombre';
+    document.getElementById('newName').value = user.name;
+    nameFields.style.display = 'block';
+  } else if (type === 'email') {
+    modalTitle.textContent = 'Cambiar Correo';
+    document.getElementById('newEmail').value = user.email;
+    emailFields.style.display = 'block';
+  } else if (type === 'password') {
+    modalTitle.textContent = 'Cambiar Contraseña';
+    passwordFields.style.display = 'block';
+  }
+
+  editModal.style.display = 'block';
 }
 
 function closeModal() {
-  document.getElementById('editModal').style.display = 'none'
-  document.getElementById('editForm').reset()
+  editModal.style.display = 'none';
+  editForm.reset();
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  const user = getCurrentUser()
-  if (!user) {
-    window.location.href = 'Login.html'
-    return
-  }
-
-  displayUserInfo(user)
-
-  // Configurar event listeners para los botones
-  document.getElementById('editNameBtn').addEventListener('click', () => openEditModal('name'))
-  document.getElementById('editEmailBtn').addEventListener('click', () => openEditModal('email'))
-  document.getElementById('editPasswordBtn').addEventListener('click', () => openEditModal('password'))
-  document.getElementById('closeModalBtn').addEventListener('click', closeModal)
-  document.getElementById('cancelModalBtn').addEventListener('click', closeModal)
-  document.getElementById('logoutButton').addEventListener('click', () => {
-    clearSession()
-    window.location.href = '../index.html'
-  })
-
-  document.getElementById('editForm').addEventListener('submit', handleFormSubmit)
-
-  // Cerrar modal al hacer clic fuera
-  window.addEventListener('click', (event) => {
-    if (event.target === document.getElementById('editModal')) {
-      closeModal()
-    }
-  })
-})
-
-function displayUserInfo(user) {
-  const profileInfo = document.getElementById('profileInfo')
-  profileInfo.innerHTML = `
-    <div class="avatar-container">
-      <img src="https://www.pngplay.com/wp-content/uploads/12/User-Avatar-Profile-PNG-Pic-Clip-Art-Background.png" alt="Avatar" class="profile-avatar">
-    </div>
-    <div class="profile-details">
-      <p><strong>Nombre:</strong> <span id="userName">${user.name}</span></p>
-      <p><strong>Correo:</strong> <span id="userEmail">${user.email}</span></p>
-      <p><strong>Miembro desde:</strong> ${new Date(user.createdAt || Date.now()).toLocaleDateString()}</p>
-    </div>
-  `
+// Funciones de notificación
+function showNotification(message, type) {
+  notificationMessage.textContent = message;
+  notificationModal.className = `notification-modal ${type}`;
+  notificationModal.style.display = 'block';
 }
 
-async function handleFormSubmit(e) {
-  e.preventDefault()
-  const user = getCurrentUser()
-  
-  if (!user || !user.id) {
-    showNotification('No se pudo obtener la sesión del usuario', 'error')
-    return
-  }
+function closeNotificationModal() {
+  notificationModal.style.display = 'none';
+}
+
+async function handleFormSubmit(event) {
+  event.preventDefault();
 
   try {
-    const updateData = {
-      userId: user.id
+    const user = getCurrentUser();
+    if (!user || (!user.id && !user._id)) {
+      throw new Error('Se requiere userId para actualizar el perfil.');
     }
+    const updateData = { userId: user.id || user._id };
 
+    // Obtener los datos del formulario según el tipo de edición
     if (currentEditType === 'name') {
-      updateData.name = document.getElementById('newName').value.trim()
-      if (!updateData.name) throw new Error('El nombre no puede estar vacío')
-    } 
-    else if (currentEditType === 'email') {
-      updateData.email = document.getElementById('newEmail').value.trim()
-      if (!updateData.email) throw new Error('El correo no puede estar vacío')
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(updateData.email)) {
-        throw new Error('Ingresa un correo válido')
+      const newName = document.getElementById('newName').value.trim();
+      if (!newName) {
+        throw new Error('El nombre no puede estar vacío');
       }
-    } 
-    else if (currentEditType === 'password') {
-      updateData.currentPassword = document.getElementById('currentPassword').value
-      updateData.newPassword = document.getElementById('newPassword').value
-      const confirmPassword = document.getElementById('confirmPassword').value
-      
-      if (!updateData.newPassword || !updateData.currentPassword) {
-        throw new Error('Todos los campos de contraseña son requeridos')
+      updateData.name = newName;
+    } else if (currentEditType === 'email') {
+      const newEmail = document.getElementById('newEmail').value.trim();
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(newEmail)) {
+        throw new Error('Formato de correo electrónico inválido');
       }
-      if (updateData.newPassword !== confirmPassword) {
-        throw new Error('Las contraseñas no coinciden')
+      updateData.email = newEmail;
+    } else if (currentEditType === 'password') {
+      const currentPassword = document.getElementById('currentPassword').value;
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+
+      if (!currentPassword || !newPassword || !confirmPassword) {
+        throw new Error('Todos los campos de contraseña son requeridos');
       }
+      if (newPassword !== confirmPassword) {
+        throw new Error('Las contraseñas no coinciden');
+      }
+      if (newPassword.length < 6) {
+        throw new Error('La nueva contraseña debe tener al menos 6 caracteres');
+      }
+
+      updateData.currentPassword = currentPassword;
+      updateData.newPassword = newPassword;
     }
 
     const response = await fetch('http://localhost:3000/api/update-profile', {
@@ -118,42 +113,60 @@ async function handleFormSubmit(e) {
       },
       body: JSON.stringify(updateData),
       credentials: 'include'
-    })
+    });
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}))
-      throw new Error(errorData.error || `Error HTTP: ${response.status}`)
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || `Error HTTP: ${response.status}`);
     }
 
-    const data = await response.json()
-    
+    const data = await response.json();
+
     if (!data.success) {
-      throw new Error(data.error || 'Error al actualizar perfil')
+      throw new Error(data.error || 'Error al actualizar perfil');
     }
 
-    setSession(data.user)
-    updateUserInfo(data.user)
-    closeModal()
-    showNotification('Cambios guardados exitosamente', 'success')
-    
+    setSession(data.user);
+    updateUserInfo(data.user);
+    closeModal();
+    showNotification('Cambios guardados exitosamente', 'success');
+
   } catch (error) {
-    console.error('Error en handleFormSubmit:', error)
-    showNotification(error.message || 'Error al guardar cambios', 'error')
+    console.error('Error en handleFormSubmit:', error);
+    showNotification(error.message || 'Error al guardar cambios', 'error');
   }
 }
 
 function updateUserInfo(user) {
-  document.getElementById('userName').textContent = user.name
-  document.getElementById('userEmail').textContent = user.email
+  document.getElementById('userName').textContent = user.name;
+  document.getElementById('userEmail').textContent = user.email;
 }
 
-function showNotification(message, type) {
-  const notification = document.createElement('div')
-  notification.className = `notification ${type}`
-  notification.textContent = message
-  document.body.appendChild(notification)
-  
-  setTimeout(() => {
-    notification.remove()
-  }, 3000)
-}
+document.addEventListener('DOMContentLoaded', () => {
+  const user = getCurrentUser();
+  if (!user) {
+    window.location.href = 'Login.html';
+    return;
+  }
+
+  updateUserInfo(user);
+
+  // Event listeners para los botones de editar
+  document.getElementById('editNameBtn').addEventListener('click', () => openEditModal('name'));
+  document.getElementById('editEmailBtn').addEventListener('click', () => openEditModal('email'));
+  document.getElementById('editPasswordBtn').addEventListener('click', () => openEditModal('password'));
+
+  // Event listeners para el modal y notificaciones
+  closeModalBtn.addEventListener('click', closeModal);
+  cancelModalBtn.addEventListener('click', closeModal);
+  editForm.addEventListener('submit', handleFormSubmit);
+
+  closeNotificationBtn?.addEventListener('click', closeNotificationModal);
+  notificationOkBtn?.addEventListener('click', closeNotificationModal);
+
+  window.addEventListener('click', (event) => {
+    if (event.target === editModal) {
+      closeModal();
+    }
+  });
+});
