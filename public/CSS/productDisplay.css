@@ -143,7 +143,31 @@
     cursor: default;
 }
 
-/* Media queries para responsividad */
+/* ------------------ */
+/* Animaciones de página */
+/* ------------------ */
+
+/* Definición de la animación de entrada */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Clase que aplica la animación a la cuadrícula de productos */
+.product-grid.fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* ------------------ */
+/* Media Queries */
+/* ------------------ */
+
 @media (max-width: 768px) {
     .gallery-header {
         flex-direction: column;
@@ -163,12 +187,12 @@
         min-width: unset;
     }
 }
+
 @media (max-width: 480px) {
     .gallery-header h2 {
         font-size: 1.5em;
     }
 }
-
 
 /* Estilos para el botón de abrir modal */
 .add-product-btn-container {
@@ -193,7 +217,7 @@
 
 /* Estilos del Modal (oculto por defecto) */
 .modal {
-    display: none; /* Oculto por defecto */
+    display: none;
     position: fixed;
     z-index: 1000;
     left: 0;
@@ -284,7 +308,7 @@
 }
 
 #formulario-producto textarea {
-    resize: vertical; /* Permite ajustar la altura del textarea */
+    resize: vertical;
 }
 
 #formulario-producto button {

@@ -21,7 +21,8 @@ const productSchema = new mongoose.Schema({
             'Smartphones',
             'Tablets',
             'Accessories',
-            'Wearables'
+            'Wearables',
+            'Digital'
         ],
         trim: true
     },

@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url'
 import { dirname } from 'path'
 import fastifyMultipart from '@fastify/multipart'
 import fastifyStatic from '@fastify/static'
+import mongoose from "mongoose"
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -43,6 +44,44 @@ export default async function productRoutes(fastify, options) {
             reply.status(500).send('Error al cargar la página de productos. ' + err.message)
         }
     })
+
+    fastify.get('/products/:id', async (request, reply) => {
+        try {
+            const { id } = request.params;
+
+            if (!mongoose.Types.ObjectId.isValid(id)) {
+                return reply.code(400).send({ message: 'ID de producto inválido' });
+            }
+
+            const product = await Product.findById(id);
+
+            if (!product) {
+                console.warn('Error en la ruta /products/:id:', error);
+                return reply.code(404).send({ message: 'Producto no encontrado' });
+            }
+
+            reply.code(200).send(product);
+        } catch (error) {
+            fastify.log.error('Error fetching product by ID:', error);
+            console.error('Error en la ruta /products/:id:', error);
+            reply.code(500).send({ message: 'Error interno del servidor' });
+        }
+    });
+
+    // RUTA para obtener productos aleatorios
+    fastify.get('/products/random', async (request, reply) => {
+        try {
+            const { limit = 4 } = request.query;
+            const products = await Product.aggregate([
+                { $sample: { size: parseInt(limit) } }
+            ]);
+            reply.send(products);
+        } catch (error) {
+            fastify.log.error('Error fetching random products:', error);
+            reply.status(500).send({ message: 'Error interno del servidor' });
+        }
+    });
+
 
     fastify.get('/products/categories', async (request, reply) => {
         try {

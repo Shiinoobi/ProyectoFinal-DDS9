@@ -3,7 +3,7 @@
 const API_BASE_URL = 'http://localhost:3000';
 const productListContainer = document.getElementById('product-list');
 const sortSelect = document.getElementById('sort-select');
-const categoryFilterSelect = document.getElementById('category-filter'); // Nuevo selector
+const categoryFilterSelect = document.getElementById('category-filter');
 const paginationContainer = document.getElementById('pagination');
 
 // Variables para la paginación y filtros
@@ -11,20 +11,21 @@ const productsPerPage = 8;
 let currentPage = 1;
 let totalProducts = 0;
 let currentSortOption = 'default';
-let currentCategoryFilter = ''; // Nueva variable para el filtro de categoría
+let currentCategoryFilter = '';
 
 // Función para crear el HTML de un solo producto
 const createProductCard = (product) => {
-    const imageUrl = product.image.startsWith('/') ? `${API_BASE_URL}${product.image}` : product.image;
+    const imageUrl = product.image.startsWith('/') ? `${API_BASE_URL}${product.image}` : product.image
 
+    // Se cambia el div principal por un enlace <a>
     return `
-        <div class="product-card">
+        <a href="productDetails.html?id=${product._id}" class="product-card">
             <img src="${imageUrl}" alt="${product.name}" class="product-image">
             <h3 class="product-name">${product.name}</h3>
             <p class="product-price">$${product.price.toFixed(2)}</p>
-        </div>
-    `;
-};
+        </a>
+    `
+}
 
 // Función para renderizar los botones de paginación
 const renderPagination = (totalItems) => {
@@ -50,7 +51,7 @@ const renderPagination = (totalItems) => {
     }
 };
 
-// NUEVA FUNCIÓN: para cargar las categorías y poblar el selector
+// Función para cargar las categorías y poblar el selector
 const fetchAndPopulateCategories = async () => {
     try {
         const response = await fetch(`${API_BASE_URL}/products/categories`);
@@ -101,10 +102,19 @@ const fetchAndDisplayProducts = async () => {
             return;
         }
 
-        const productsHtml = products.map(createProductCard).join('');
-        productListContainer.innerHTML = productsHtml;
-        
-        renderPagination(totalProducts);
+        // Antes de actualizar el contenido, eliminamos la clase de animación para que se pueda reiniciar
+        productListContainer.classList.remove('fade-in');
+
+        // Usamos requestAnimationFrame para asegurar que el DOM ha procesado el cambio
+        window.requestAnimationFrame(() => {
+            const productsHtml = products.map(createProductCard).join('');
+            productListContainer.innerHTML = productsHtml;
+            
+            renderPagination(totalProducts);
+
+            // Después de añadir el nuevo contenido, agregamos la clase para iniciar la animación
+            productListContainer.classList.add('fade-in');
+        });
 
     } catch (error) {
         console.error('Error fetching products:', error);
