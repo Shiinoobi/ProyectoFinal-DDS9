@@ -44,6 +44,45 @@ export default async function productRoutes(fastify, options) {
         }
     })
 
+    fastify.get('/products/categories', async (request, reply) => {
+        try {
+            const categories = await Product.distinct('category');
+            reply.send(categories);
+        } catch (error) {
+            fastify.log.error(error);
+            reply.status(500).send({ message: 'Error al obtener las categorías', error: error.message });
+        }
+    });
+
+    fastify.get('/products', async (request, reply) => {
+        try {
+            const { sort, page = 1, limit = 8, category } = request.query;
+            const skip = (parseInt(page) - 1) * parseInt(limit);
+
+            const filter = {};
+            if (category) {
+                filter.category = category;
+            }
+
+            let productsQuery;
+            if (sort === 'price') {
+                productsQuery = Product.find(filter).sort({ price: 1 });
+            } else if (sort === 'category') {
+                productsQuery = Product.find(filter).sort({ category: 1 });
+            } else {
+                productsQuery = Product.find(filter).sort({ createdAt: -1 });
+            }
+
+            const totalProducts = await Product.countDocuments(filter);
+            const products = await productsQuery.skip(skip).limit(parseInt(limit));
+
+            reply.send({ products, totalProducts });
+        } catch (error) {
+            fastify.log.error(error);
+            reply.status(500).send({ message: 'Error al obtener los productos', error: error.message });
+        }
+    });
+
     // Ruta POST para añadir un nuevo producto
     fastify.post('/products', async (request, reply) => {
         try {

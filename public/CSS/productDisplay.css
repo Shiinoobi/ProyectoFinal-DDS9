@@ -1,0 +1,322 @@
+/* public/CSS/productDisplay.css */
+
+/* Contenedor principal de la galería de productos */
+.product-gallery-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+/* Encabezado y opciones de ordenación */
+.gallery-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    gap: 15px;
+}
+
+.gallery-header h2 {
+    font-size: 1.8em;
+    font-weight: 600;
+    color: #333;
+    flex-grow: 1;
+    margin: 0;
+}
+
+/* Contenedor para los selectores de filtro y ordenación */
+.filter-sort-options {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Estilos para el selector de filtro por categoría */
+.filter-options,
+.sorting-options {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.filter-options label,
+.sorting-options label {
+    margin: 0;
+    font-size: 1em;
+    color: #555;
+}
+
+#category-filter,
+#sort-select {
+    padding: 8px 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1em;
+    cursor: pointer;
+    background-color: #fff;
+    min-width: 150px;
+}
+
+/* Contenedor de la cuadrícula de productos */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 40px;
+}
+
+/* Estilos para cada tarjeta de producto */
+.product-card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+    text-align: center;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Imágenes consistentes */
+.product-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    margin-bottom: 15px;
+    border-radius: 4px;
+}
+
+.product-name {
+    font-size: 1.2em;
+    font-weight: 500;
+    margin: 0 0 5px;
+    color: #333;
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.product-price {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #007bff;
+    margin: 0;
+}
+
+/* Estilos de la paginación */
+.pagination {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 40px;
+    gap: 10px;
+}
+
+.pagination button {
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    min-width: 40px;
+}
+
+.pagination button:hover:not(.active) {
+    background-color: #f0f0f0;
+}
+
+.pagination button.active {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+    cursor: default;
+}
+
+/* Media queries para responsividad */
+@media (max-width: 768px) {
+    .gallery-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .filter-sort-options {
+        flex-direction: column;
+        width: 100%;
+    }
+    .filter-options,
+    .sorting-options {
+        width: 100%;
+    }
+    #category-filter,
+    #sort-select {
+        width: 100%;
+        min-width: unset;
+    }
+}
+@media (max-width: 480px) {
+    .gallery-header h2 {
+        font-size: 1.5em;
+    }
+}
+
+
+/* Estilos para el botón de abrir modal */
+.add-product-btn-container {
+    text-align: right;
+    margin: 20px 0;
+}
+
+.add-product-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1em;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.add-product-btn:hover {
+    background-color: #218838;
+}
+
+/* Estilos del Modal (oculto por defecto) */
+.modal {
+    display: none; /* Oculto por defecto */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+    padding-top: 60px;
+}
+
+/* Contenido del Modal */
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    border-radius: 8px;
+    position: relative;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    animation-name: animatetop;
+    animation-duration: 0.4s
+}
+
+/* Animación de entrada */
+@keyframes animatetop {
+    from {top: -300px; opacity: 0}
+    to {top: 0; opacity: 1}
+}
+
+/* Botón de cierre */
+.close-btn {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-btn:hover,
+.close-btn:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Estilos para el formulario dentro del modal */
+#nuevo-producto h2 {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+    color: #333;
+    text-align: center;
+}
+
+#nuevo-producto {
+    margin: 0;
+    padding: 0;
+    background-color: transparent;
+}
+
+#formulario-producto {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#formulario-producto label {
+    font-weight: bold;
+    color: #555;
+}
+
+#formulario-producto input,
+#formulario-producto select,
+#formulario-producto textarea {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1em;
+}
+
+#formulario-producto input:focus,
+#formulario-producto select:focus,
+#formulario-producto textarea:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+#formulario-producto textarea {
+    resize: vertical; /* Permite ajustar la altura del textarea */
+}
+
+#formulario-producto button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1em;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#formulario-producto button:hover {
+    background-color: #0056b3;
+}
+
+#mensaje-formulario {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 4px;
+    text-align: center;
+}
+
+#mensaje-formulario.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+#mensaje-formulario.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
