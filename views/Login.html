@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../public/CSS/style.css">
+    <link rel="stylesheet" href="../public/CSS/login.css">
+    <title>Login</title>
+</head>
+<body>
+    <div class="container" id="container">
+        <a href="../index.html" class="back-to-account">← Volver a Inicio</a>
+        
+        <div class="form-container sign-up-container">
+            <form id="registerForm">
+                <h1>Create Account</h1>
+                <input type="text" id="regName" placeholder="Name" required 
+                       autocomplete="name" aria-label="Your full name">
+                
+                <input type="email" id="regEmail" placeholder="Email" required
+                       autocomplete="email" aria-label="Your email address">
+                
+                <input type="password" id="regPassword" placeholder="Password" required minlength="6"
+                       autocomplete="new-password" aria-label="Create a password">
+                
+                <button type="submit">Registrate</button>
+            </form>
+        </div>
+        
+        <div class="form-container sign-in-container">
+            <form id="loginForm">
+                <h1>Login</h1>
+                <input type="email" id="loginEmail" placeholder="Email" required
+                       autocomplete="username" aria-label="Your email">
+                
+                <input type="password" id="loginPassword" placeholder="Password" required
+                       autocomplete="current-password" aria-label="Your password">
+                
+                <button type="submit">Iniciar Sesion</button>
+            </form>
+        </div>
+        
+        <div class="overlay-container">
+            <div class="overlay">
+                <div class="overlay-panel overlay-left">
+                    <h1>Login</h1>
+                    <p>Already have an account? Sign in here.</p>
+                    <button class="ghost" id="signIn">Inicia Sesion</button>
+                </div>
+                <div class="overlay-panel overlay-right">
+                    <h1>Sign Up</h1>
+                    <p>Don't have an account? Create one now.</p>
+                    <button class="ghost" id="signUp">Registrate</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="../public/JS/html_login.js"></script>
+</body>
+</html>

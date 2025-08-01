@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../public/CSS/style.css">
+    <link rel="stylesheet" href="../public/CSS/factura.css">
+    <link rel="stylesheet" href="../public/CSS/footer.css">
+    <title>Facturacion</title>
+</head>
+<body>
+    <nav class="navbar">
+        <ul class="nav-list">
+            <li><a href="../index.html">Inicio</a></li>
+            <li><a href="Productos.html">Productos</a></li>
+            <li><a href="Deseos.html">Deseos</a></li>
+            <li><a href="Carrito.html">Carrito</a></li>
+            <li><a href="Contactos.html">Contacto</a></li>
+            <li>
+                <a href="Cuenta.html">Cuenta<img
+                        src="https://www.pngplay.com/wp-content/uploads/12/User-Avatar-Profile-PNG-Pic-Clip-Art-Background.png"
+                        alt="Icono"></a>
+            </li>
+        </ul>
+    </nav>
+    <div id="cuadroFactura" class="factura-container">
+    <h2>Factura Electrónica</h2>
+    <p>Usuario: <span id="usuario"></span></p>
+    <p>Nombre Real: <span id="nombreReal"></span></p>
+    <p>Confirmar Gmail: <span id="gmail"></span></p>
+    <p>Cantidad de productos: <span id="cantidadProductos"></span></p>
+    <p>Costo de productos: <span id="costoProductos"></span></p>
+    <p>ITBMS (7%): <span id="itbms"></span></p>
+    <label for="direccionEnvioInput">Dirección de envío:</label>
+    <input type="text" id="direccionEnvioInput" class="factura-item" placeholder="Ingrese dirección de entrega" />
+    <p>Costo de envío: <span id="costoEnvio"></span></p>
+    <h3>Total: <span id="totalFactura"></span></h3>
+</div>
+    <div class="dashboard">
+        <a href="../index.html"><button>Volver al inicio</button></a>
+        <a href="Carrito.html"><button>Cancelar Pedido</button></a>
+    </div>
+        <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-info">
+                <p>&copy; 2025 TuEmpresa. Todos los derechos reservados.</p>
+                <p>Correo: contacto@tuempresa.com | Tel: +507 123-4567</p>
+            </div>
+            <div class="footer-links">
+                <a href="../index.html">Inicio</a>
+                <a href="Productos.html">Productos</a>
+                <a href="Contactos.html">Contacto</a>
+                <a href="Cuenta.html">Cuenta</a>
+            </div>
+        </div>
+    </footer>
+    <script type="module" src="../public/JS/sesion.js"></script>
+    <script src="../public/JS/factura.js"></script>
+</body>
+</html>

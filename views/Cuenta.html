@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../public/CSS/style.css">
+    <link rel="stylesheet" href="../public/CSS/cuenta.css">
+    <link rel="stylesheet" href="../public/CSS/footer.css">
+    <title>Cuenta</title>
+</head>
+<body>
+    <nav class="navbar">
+        <ul class="nav-list">
+            <li><a href="../index.html">Inicio</a></li>
+            <li><a href="Productos.html">Productos</a></li>
+            <li><a href="Deseos.html">Deseos</a></li>
+            <li><a href="Carrito.html">Carrito</a></li>
+            <li><a href="Contactos.html">Contacto</a></li>
+            <li>
+                <a href="Cuenta.html" id="accountLink">Cuenta<img src="https://www.pngplay.com/wp-content/uploads/12/User-Avatar-Profile-PNG-Pic-Clip-Art-Background.png" alt="Icono"></a>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="account-container">
+        <h1>Tu Cuenta</h1>
+        
+        <div class="profile-info" id="profileInfo">
+            <div class="profile-header">
+                <img src="https://www.pngplay.com/wp-content/uploads/12/User-Avatar-Profile-PNG-Pic-Clip-Art-Background.png" alt="Avatar" class="profile-avatar">
+                <h2 id="userName">Nombre del Usuario</h2>
+            </div>
+            <div class="profile-details">
+                <p><strong>Correo:</strong> <span id="userEmail">correo@ejemplo.com</span></p>
+                <div class="profile-actions">
+                    <button class="edit-btn" id="editNameBtn">Editar Nombre</button>
+                    <button class="edit-btn" id="editEmailBtn">Editar Correo</button>
+                    <button class="edit-btn" id="editPasswordBtn">Cambiar Contraseña</button>
+                </div>
+            </div>
+            <button class="logout-btn" id="logoutButton">Cerrar Sesión</button>
+        </div>
+    </div>
+
+    <!-- Modal para editar perfil -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeModalBtn">&times;</span>
+            <h2 id="modalTitle"></h2>
+            <form id="editForm">
+                <div id="nameFields" class="form-group" style="display: none;">
+                    <label for="newName">Nuevo Nombre:</label>
+                    <input type="text" id="newName">
+                </div>
+                <div id="emailFields" class="form-group" style="display: none;">
+                    <label for="newEmail">Nuevo Correo:</label>
+                    <input type="email" id="newEmail">
+                </div>
+                <div id="passwordFields" class="form-group" style="display: none;">
+                    <label for="currentPassword">Contraseña Actual:</label>
+                    <input type="password" id="currentPassword">
+                    <label for="newPassword">Nueva Contraseña:</label>
+                    <input type="password" id="newPassword">
+                    <label for="confirmPassword">Confirmar Nueva Contraseña:</label>
+                    <input type="password" id="confirmPassword">
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="cancel-btn" id="cancelModalBtn">Cancelar</button>
+                    <button type="submit" class="submit-btn" id="saveChanges">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de notificaciones -->
+    <div id="notificationModal" class="notification-modal">
+        <div class="notification-content">
+            <span class="close-btn" id="closeNotificationBtn">&times;</span>
+            <p id="notificationMessage"></p>
+            <div class="notification-buttons">
+                <button type="button" class="ok-btn" id="notificationOkBtn">OK</button>
+            </div>
+        </div>
+    </div>
+
+        <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-info">
+                <p>&copy; 2025 TuEmpresa. Todos los derechos reservados.</p>
+                <p>Correo: contacto@tuempresa.com | Tel: +507 123-4567</p>
+            </div>
+            <div class="footer-links">
+                <a href="../index.html">Inicio</a>
+                <a href="Productos.html">Productos</a>
+                <a href="Contactos.html">Contacto</a>
+                <a href="Cuenta.html">Cuenta</a>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module" src="../public/js/sesion.js"></script>
+    <script type="module" src="../public/js/cuenta.js"></script>
+</body>
+</html>

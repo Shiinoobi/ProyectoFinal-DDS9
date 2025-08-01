@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../public/CSS/style.css">
+  <link rel="stylesheet" href="../public/CSS/carrito.css">
+  <link rel="stylesheet" href="../public/CSS/footer.css">
+  <title>Carrito de Compras</title>
+</head>
+<body>
+  <nav class="navbar">
+    <!-- Mismo menú que en Deseos -->
+    <ul class="nav-list">
+      <li><a href="../index.html">Inicio</a></li>
+      <li><a href="Productos.html">Productos</a></li>
+      <li><a href="Deseos.html">Deseos</a></li>
+      <li><a href="Carrito.html">Carrito</a></li>
+      <li><a href="Contactos.html">Contacto</a></li>
+      <li>
+        <a href="Cuenta.html">Cuenta
+          <img src="https://www.pngplay.com/wp-content/uploads/12/User-Avatar-Profile-PNG-Pic-Clip-Art-Background.png" alt="Icono">
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+<main class="carrito-page-grid">
+  <section class="carrito-list-column">
+    <h1>Tu Carrito</h1>
+    <button id="clear-cart-btn">Vaciar carrito</button>
+    <div id="carrito-products-list" class="carrito-list-grid">
+      <p>Cargando productos del carrito...</p>
+    </div>
+  </section>
+
+  <aside class="carrito-summary-column">
+    <h2>Resumen de compra</h2>
+    <div id="carrito-summary-box">
+      <p id="carrito-subtotal">Subtotal: $0.00</p>
+      <p id="carrito-envio">Envío estimado: $0.00</p>
+      <hr>
+      <p id="carrito-total" class="total-highlight">Total: $0.00</p>
+      <button id="btnContinuarPago" class="carrito-continue-btn">Continuar compra</button>
+    </div>
+  </aside>
+</main>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-info">
+                <p>&copy; 2025 TuEmpresa. Todos los derechos reservados.</p>
+                <p>Correo: contacto@tuempresa.com | Tel: +507 123-4567</p>
+            </div>
+            <div class="footer-links">
+                <a href="../index.html">Inicio</a>
+                <a href="Productos.html">Productos</a>
+                <a href="Contactos.html">Contacto</a>
+                <a href="Cuenta.html">Cuenta</a>
+            </div>
+        </div>
+    </footer>
+
+  <script type="module" src="../public/JS/sesion.js"></script>
+  <script type="module" src="../public/JS/carrito.js"></script>
+</body>
+</html>

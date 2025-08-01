@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../public/CSS/style.css">
+    <link rel="stylesheet" href="../public/CSS/productDisplay.css">
+    <link rel="stylesheet" href="../public/CSS/footer.css">
+    <title>Añadir Nuevo Producto</title>
+</head>
+
+<body>
+    <nav class="navbar">
+        <ul class="nav-list">
+            <li><a href="../index.html">Inicio</a></li>
+            <li><a href="Productos.html">Productos</a></li>
+            <li><a href="Deseos.html">Deseos</a></li>
+            <li><a href="Carrito.html">Carrito</a></li>
+            <li><a href="Contactos.html">Contacto</a></li>
+            <li>
+                <a href="Cuenta.html">Cuenta<img
+                        src="https://www.pngplay.com/wp-content/uploads/12/User-Avatar-Profile-PNG-Pic-Clip-Art-Background.png"
+                        alt="Icono"></a>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="product-gallery-container">
+        <div class="gallery-header">
+            <h2>Todos los Productos</h2>
+            <div class="filter-sort-options">
+                <div class="filter-options">
+                    <label for="category-filter">Filtrar por:</label>
+                    <select id="category-filter">
+                        <option value="">Todas las categorías</option>
+                    </select>
+                </div>
+                
+                <div class="sorting-options">
+                    <label for="sort-select">Ordenar por:</label>
+                    <select id="sort-select">
+                        <option value="default">Default</option>
+                        <option value="price">Precio</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="add-product-btn-container">
+            <button id="open-modal-btn" class="add-product-btn">Agregar Nuevo Producto</button>
+        </div>
+        
+        <section id="product-list" class="product-grid">
+            </section>
+            <br>
+        <div id="pagination" class="pagination">
+            </div>
+    </div>
+
+    <div id="add-product-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <section id="nuevo-producto">
+                <h2>Agregar Nuevo Producto</h2>
+                <form id="formulario-producto" action="http://localhost:3000/products" method="POST" enctype="multipart/form-data">
+                    <label for="name">Nombre del Producto:</label>
+                    <input type="text" id="name" name="name" placeholder="Ej: Laptop Gamer XYZ" required />
+                    <label for="price">Precio:</label>
+                    <input type="number" id="price" name="price" placeholder="Ej: 1200.00" step="0.01" required />
+                    <label for="category">Categoría:</label>
+                    <select id="category" name="category" required>
+                        <option value="">Selecciona una categoría</option>
+                        <option value="Laptops">Laptops</option>
+                        <option value="Smartphones">Smartphones</option>
+                        <option value="Tablets">Tablets</option>
+                        <option value="Accessories">Accesorios</option>
+                        <option value="Wearables">Wearables</option>
+                        <option value="Digital">Digital</option>
+                    </select>
+                    <label for="image">Imagen del Producto:</label>
+                    <input type="file" id="image" name="image" accept="image/*" required />
+                    <label for="description">Descripción (opcional):</label>
+                    <textarea id="description" name="description" placeholder="Breve descripción del producto..." rows="4"></textarea>
+                    <button type="submit">Crear Producto</button>
+                </form>
+                <p id="mensaje-formulario"></p>
+            </section>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-info">
+                <p>&copy; 2025 TuEmpresa. Todos los derechos reservados.</p>
+                <p>Correo: contacto@tuempresa.com | Tel: +507 123-4567</p>
+            </div>
+            <div class="footer-links">
+                <a href="../index.html">Inicio</a>
+                <a href="Productos.html">Productos</a>
+                <a href="Contactos.html">Contacto</a>
+                <a href="Cuenta.html">Cuenta</a>
+            </div>
+        </div>
+    </footer>
+    <script type="module" src="../public/JS/sesion.js"></script>
+    <script type="module" src="../public/JS/displayProducts.js"></script>
+    <script type="module" src="../public/JS/productForm.js"></script>
+</body>
+</html>
