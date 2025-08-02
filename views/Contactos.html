@@ -4,31 +4,90 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../public/CSS/style.css">
+    <link rel="stylesheet" href="../public/CSS/contactos.css">
+    <link rel="stylesheet" href="../public/CSS/footer.css">
     <title>Contactos</title>
 </head>
 <body>
     <nav class="navbar">
         <ul class="nav-list">
-            <li class="dropdown">
-                <a href="#" class="dropbtn">Productos</a>
-                <div class="dropdown-content">
-                    <a href="ProductosDigitales.html">Productos Digitales</a>
-                    <a href="ProductosFisicos.html">Productos Físicos</a>
-                </div>
-            </li>
+            <li><a href="../index.html">Inicio</a></li>
+            <li><a href="Productos.html">Productos</a></li>
             <li><a href="Deseos.html">Deseos</a></li>
             <li><a href="Carrito.html">Carrito</a></li>
             <li><a href="Contactos.html">Contacto</a></li>
             <li>
-                <a href="Cuenta.html">Cuenta<img src="https://www.pngplay.com/wp-content/uploads/12/User-Avatar-Profile-PNG-Pic-Clip-Art-Background.png" alt="Icono"></a>
+                <a href="Cuenta.html">Cuenta<img
+                        src="https://www.pngplay.com/wp-content/uploads/12/User-Avatar-Profile-PNG-Pic-Clip-Art-Background.png"
+                        alt="Icono"></a>
             </li>
         </ul>
-    </nav>   
-    <h1>Contactanos</h1>
-    <div class="dashboard">
-        <a href="../index.html"><button>Volver al Inicio</button></a>
-    </div>
+    </nav>
+    
+    <main class="contact-container">
+        <h1 class="contact-title">Contáctanos</h1>
+        
+        <div class="contact-content">
+            <section class="contact-info">
+                <h2>Información de Contacto</h2>
+                <div class="info-item">
+                    <i class="icon">📍</i>
+                    <p>123 Calle Principal, Ciudad, País</p>
+                </div>
+                <div class="info-item">
+                    <i class="icon">📞</i>
+                    <p>+507 123-4567</p>
+                </div>
+                <div class="info-item">
+                    <i class="icon">✉️</i>
+                    <p>contacto@tuempresa.com</p>
+                </div>
+                <div class="info-item">
+                    <i class="icon">🕒</i>
+                    <p>Lunes a Viernes: 9:00 AM - 6:00 PM</p>
+                </div>
+            </section>
+            
+            <section class="contact-form">
+                <h2>Envíanos un Mensaje</h2>
+                <form class="message-form">
+                    <div class="form-group">
+                        <label for="name">Nombre:</label>
+                        <input type="text" id="name" placeholder="Tu nombre">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Correo Electrónico:</label>
+                        <input type="email" id="email" placeholder="tu@correo.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="subject">Asunto:</label>
+                        <input type="text" id="subject" placeholder="Asunto del mensaje">
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Mensaje:</label>
+                        <textarea id="message" rows="5" placeholder="Escribe tu mensaje aquí..."></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">Enviar Mensaje</button>
+                </form>
+            </section>
+        </div>
+    </main>
+
+        <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-info">
+                <p>&copy; 2025 TuEmpresa. Todos los derechos reservados.</p>
+                <p>Correo: contacto@tuempresa.com | Tel: +507 123-4567</p>
+            </div>
+            <div class="footer-links">
+                <a href="../index.html">Inicio</a>
+                <a href="Productos.html">Productos</a>
+                <a href="Contactos.html">Contacto</a>
+                <a href="Cuenta.html">Cuenta</a>
+            </div>
+        </div>
+    </footer>
+    
+    <script type="module" src="../public/JS/sesion.js"></script>
 </body>
 </html>
-
-

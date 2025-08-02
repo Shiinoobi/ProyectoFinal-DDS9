@@ -9,25 +9,37 @@
 </head>
 <body>
     <div class="container" id="container">
-        <a href="Cuenta.html" class="back-to-account">← Volver a Cuenta</a>
+        <a href="../index.html" class="back-to-account">← Volver a Inicio</a>
         
         <div class="form-container sign-up-container">
-            <form action="#">
+            <form id="registerForm">
                 <h1>Create Account</h1>
-                <input type="text" placeholder="Name" />
-                <input type="email" placeholder="Email" />
-                <input type="password" placeholder="Password" />
-                <button>Registrate</button>
+                <input type="text" id="regName" placeholder="Name" required 
+                       autocomplete="name" aria-label="Your full name">
+                
+                <input type="email" id="regEmail" placeholder="Email" required
+                       autocomplete="email" aria-label="Your email address">
+                
+                <input type="password" id="regPassword" placeholder="Password" required minlength="6"
+                       autocomplete="new-password" aria-label="Create a password">
+                
+                <button type="submit">Registrate</button>
             </form>
         </div>
+        
         <div class="form-container sign-in-container">
-            <form action="#">
+            <form id="loginForm">
                 <h1>Login</h1>
-                <input type="email" placeholder="Email" />
-                <input type="password" placeholder="Password" />
-                <button>Iniciar Sesion</button>
+                <input type="email" id="loginEmail" placeholder="Email" required
+                       autocomplete="username" aria-label="Your email">
+                
+                <input type="password" id="loginPassword" placeholder="Password" required
+                       autocomplete="current-password" aria-label="Your password">
+                
+                <button type="submit">Iniciar Sesion</button>
             </form>
         </div>
+        
         <div class="overlay-container">
             <div class="overlay">
                 <div class="overlay-panel overlay-left">
@@ -43,18 +55,6 @@
             </div>
         </div>
     </div>
-    <script>
-        const signUpButton = document.getElementById('signUp');
-        const signInButton = document.getElementById('signIn');
-        const container = document.getElementById('container');
-
-        signUpButton.addEventListener('click', () => {
-            container.classList.add("right-panel-active");
-        });
-
-        signInButton.addEventListener('click', () => {
-            container.classList.remove("right-panel-active");
-        });
-    </script>
+    <script type="module" src="../public/JS/html_login.js"></script>
 </body>
 </html>
