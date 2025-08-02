@@ -16,8 +16,7 @@
   ],
   "author": "Dennis Zhong",
   "contributors": [
-    "Gerardo Abrego",
-    "Zehidy Hassell"
+    "Gerardo Abrego"
   ],
   "license": "MIT",
   "packageManager": "pnpm@10.14.0",
